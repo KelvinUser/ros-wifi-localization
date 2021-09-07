@@ -164,7 +164,7 @@ class Measurement():
         dta = float((poses_time[index_after] - self.time)/dt)
         dtb = float((self.time - poses_time[index_before])/dt)
         self.pose = [dta*xb+dtb*xa,dta*yb+dtb*ya,(ab+dtb*((aa-ab+np.pi)%(2*np.pi)-np.pi)+np.pi)%(2*np.pi)-np.pi]
-        eprint('[Find Pose] [{}] = {}'.format(index_before, self.pose))
+        #eprint('[Find Pose] [{}] = {}'.format(index_before, self.pose))
         #(aa-ab+np.pi)%(2*np.pi)-np.pi ensure that aa-ab uses the shortest arc from aa to ab 
         #e.g., 1deg - 359deg -> (1-359+180)%(360)-180 = 2deg instead of 1-359 = -358 deg  
         #dta*ab+dtb*aa -> dta*ab+dtb*(aa-ab+ab) -> dta*ab+dtb*((aa-ab+np.pi)%(2*np.pi)-np.pi +ab)
@@ -511,7 +511,7 @@ class ProcessedData():
         eprint('Compute Data ...')
         if not self.poses is None:     
             dataX   = np.asarray([m.pose for m in self.measurements])
-            eprint(self.measurements)
+            #eprint(self.measurements)
         else:
             dataX = None
             

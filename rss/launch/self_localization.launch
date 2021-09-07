@@ -16,8 +16,8 @@
     <arg name="min_particles"   default="1500" />
     <arg name="max_particles"   default="5000" />
 
-    <arg name="bag_path"        default="/home/kelvin/catkin_ws/src/tests/bags/"/>
-    <arg name="map_path"        default="/home/kelvin/catkin_ws/src/tests/maps/"/>
+    <arg name="bag_path"        default="$(find tests)/bags/"/>
+    <arg name="map_path"        default="$(find tests)/maps/"/>
     <arg name="map_name"        default="b3map"/> 
     
     <arg name="train_data_name" default="b3test1"/> 
