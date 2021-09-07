@@ -2,11 +2,11 @@
 
   <param name="use_sim_time" value="true" />
 
-  <arg name="bag_path"  default="/data/bags/Todai/"/>
-  <arg name="save_path" default="/data/bags/Todai/processed_data/"/>
-  <arg name="map_path"  default="/data/bags/Todai/maps/"/>
-  <arg name="bag_name"  default="b24test3"/>   
-  <arg name="map_name"  default="b24map"/>  
+  <arg name="bag_path"  default="/home/kelvin/catkin_ws/src/tests/bags/"/>
+  <arg name="save_path" default="/home/kelvin/RiceRobotics/Date/20210906_GenerateMap/"/>
+  <arg name="map_path"  default="/home/kelvin/catkin_ws/src/tests/maps/"/>
+  <arg name="bag_name"  default="b3test1"/>   
+  <arg name="map_name"  default="b3map"/>  
   <arg name="rosbag_rate"  default="1" />
 
   <!-- amcl parameters -->

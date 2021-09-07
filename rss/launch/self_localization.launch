@@ -7,7 +7,7 @@
     <arg name="bag_name"        default="b3test1"/>   
     <arg name="angle_var"       default="0.08"/>
     <arg name="distance_var"    default="0.05"/>
-    <arg name="rss_interval"    default="3" />
+    <arg name="rss_interval"    default="1" />
 
     <arg name="joint_kl"        default="0" />
     <arg name="joint_sgPoE"     default="0" />
@@ -16,8 +16,8 @@
     <arg name="min_particles"   default="1500" />
     <arg name="max_particles"   default="5000" />
 
-    <arg name="bag_path"        default="$(find tests)/bags/"/>
-    <arg name="map_path"        default="$(find tests)/maps/"/>
+    <arg name="bag_path"        default="/home/kelvin/catkin_ws/src/tests/bags/"/>
+    <arg name="map_path"        default="/home/kelvin/catkin_ws/src/tests/maps/"/>
     <arg name="map_name"        default="b3map"/> 
     
     <arg name="train_data_name" default="b3test1"/> 
@@ -95,21 +95,6 @@
     </group>
 
     <!-- Once this node ends, all ends-->
-    <node name="save" pkg="rss" type="save" required = "true" > 
-        <param name="angle_var"         value="$(arg angle_var)" />
-        <param name="distance_var"      value="$(arg distance_var)" />
-        <param name="rss_interval"      value="$(arg rss_interval)" />
-        <param name="model_name"        value="$(arg model_name)" />
-        <param name="bag_name"          value="$(arg bag_name)" />   
-        <param name="min_particles"     value="$(arg min_particles)" />
-        <param name="max_particles"     value="$(arg max_particles)" />
-        <param name="train_data_name"   value="$(arg train_data_name)" />
-        <param name="train_data_fuse"   value="$(arg train_data_fuse)" />
-        <param name="filepath"          value="$(arg save_filepath)" />
-        <param name="joint_pgPoE"       value="$(arg joint_kl)" />
-        <param name="joint_sgPoE"       value="$(arg joint_sgPoE)" />
-
-    </node>
 </launch>
 
 

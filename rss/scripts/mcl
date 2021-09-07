@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from __future__ import print_function
 #standard libraries
 import sys
@@ -16,7 +16,7 @@ from rss.srv import Localization
 from rss.localization_server import loc_server_client
 from Localization.motionmodel.odometry import Odometry as OdomModel
 
-debug=0
+debug=1
 verbose=0
 random_init=0
 

@@ -7,7 +7,6 @@ import subprocess
 import argparse
 import signal
 
-
 def eprint(*args, **kwargs):                    #prints errors/warnings to stderr
     print(*args, file=sys.stderr, **kwargs)
 
@@ -68,6 +67,7 @@ class Device:
             eprint('Using Filter')
 
     def chopper_start(self):
+        
         cmd = "chopper.py -i {} -t {} -ch {}".format(self.iface,self.ts," ".join(str(ch) for ch in self.channels))
         self.chopper_process = subprocess.Popen(cmd.split(),stdout=subprocess.PIPE)
 

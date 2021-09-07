@@ -1,11 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #TODO: change Device to accept st as float not str
 from __future__ import print_function
 import sys
 import rospy
 from std_msgs.msg import String
-from rss.RSSImeasurement import Device
-import thread
+sys.path.insert(1, '/home/kelvin/catkin_ws/src/rss/src/rss/')
+#from rss.RSSImeasurement import Device
+from RSSImeasurement import Device
+import _thread
+
+sys.path.insert(1, '/home/kelvin/catkin_ws/src/rss/msg/')
 from rss.msg import RssData, RssDatum
 
 def eprint(*args, **kwargs):                    #prints errors/warnings to stderr
@@ -18,7 +22,7 @@ class RssAcquire():
         str_out = ''
 
         self.pub = rospy.Publisher('rss',RssData,queue_size=10)
-        self.iface = rospy.get_param('~iface','wlan0')   #Wlan interface
+        self.iface = rospy.get_param('~iface','wlp2s0')   #Wlan interface
         self.st = rospy.get_param('~st',1)            #Total sample time of a hoop
         self.ch = rospy.get_param('~ch', [6,11]) #Channels to hop
         
@@ -71,7 +75,6 @@ class RssAcquire():
         message     string with tcpdump data
         time        time in ns sampled at the end of the meassurement
         duration    duration of the sampling in ms
-
         Messages format
         ================================================================
         RssData:
@@ -130,4 +133,3 @@ if __name__ == '__main__':
  
     except rospy.ROSInterruptException:
         eprint('Could not initialize rss node')
-

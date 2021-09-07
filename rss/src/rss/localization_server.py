@@ -7,14 +7,20 @@ import rospy
 
 #ros messages
 from geometry_msgs.msg import PoseArray, Pose
-from rss.msg import RssData, ProbArray
+
+sys.path.insert(1, '/home/kelvin/catkin_ws/src/rss/msg/')
+from rss.msg import RssData, RssDatum
 
 #Services
 from rss.srv import Localization
 
 #personal libraries
 from rss.classes import ProcessedData
-from util.others import mesh
+
+sys.path.insert(1, '/home/kelvin/catkin_ws/src/rss/util')
+from others import mesh
+#from util.others import mesh
+sys.path.insert(1, '/home/kelvin/catkin_ws/src/rss/')
 from Localization.sensormodel.sensormodel import SensorModel
 
 debug = 0
@@ -51,7 +57,7 @@ def loc_server_handle(model,raw_rss,nsamples,pose_array, **kwargs):
         weights         Weights (likelihood) of pose_array for the model given the RssData
                         provided
     """    
-    
+    eprint('[loc_server_handle] Start')
     ns = kwargs.pop('ns','')
     limits = rospy.get_param(ns+'/map_limits')
     
@@ -71,13 +77,15 @@ def loc_server_handle(model,raw_rss,nsamples,pose_array, **kwargs):
     if not isinstance(model,SensorModel):
         eprint('[WARN] Provided model is not a valid SensorModel')
         return [pose_array, list(), list()]
-
+    
+    #eprint(dir(pose_array.pose_array.poses))
     nrss = len(rss_list)
+    eprint('[loc_server_handle] ProcessedData')
     rss  = ProcessedData(rss_list,other_mac_dict=model.all_mac_dict,
             filters_on=False,warn_pose_off=True,flag_fuse_measurements=True,
             filter_fuse_measurements=nrss)
     
-
+    eprint('[loc_server] ProcessData Done...')
     if debug:
         eprint(type(rss))
         for rss_datum in rss_list:

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from __future__ import print_function
 #standard libraries
 import sys
@@ -77,7 +77,7 @@ class RssLocalization():
         #Var initialization
         self.raw_rss    = list()
 
-        #subscribers 
+        #subscribers /home/kelvin/catkin_ws/src/rss/scripts/localization
         eprint('Subscribing to '+self.ns+'rss')
         rospy.Subscriber(self.ns+'rss',RssData,self.callback_rss) 
 
@@ -88,16 +88,23 @@ class RssLocalization():
         #Load model data or model
         #TODO: file name as system input
         if self.load_model_flag:
+            eprint('Loading model data')
             # Load model
             data_empty = {'X':np.asarray([[1,1]]),'Y':np.asarray([1]),'Var':np.asarray([1])}
             self.model = WifiGP(data_empty,verbose=True)
             self.model.load(filepath='~/catkin_ws/src/tests/bags/processed_data/b3_hgp.p')
 
         else:
+            eprint('Loading Training Modle [{}]'.format(train_data_name))
             file_name = train_data_name  
+            
             #TODO: file_path = search for test      
             eprint('Loading model data')
             raw_rss,poses,tmp_odom = load_data(file_name=file_name) #odometry is not needed
+            eprint('[Check Size] poses size = {}'.format(len(poses)))
+            
+            eprint(poses)
+            
             traindata = ProcessedData(raw_rss,poses=poses,
                                       filter_fuse_measurements=train_data_fuse)
             distance = np.sum(traindata.data['X'][1:]**2+traindata.data['X'][:-1]**2
@@ -165,11 +172,13 @@ class RssLocalization():
 
         except:
             e = sys.exc_info()[0]
-            rospy.logerr('[self_loc] Localization failed: '+str(e))  
+            rospy.logerr('[self_loc] Lomodelcalization failed: '+str(e))  
             return False
     
     def handle_loc(self,req):
         try:
+            eprint('[handle_loc] Callback Received')
+            #loc = loc_server_handle(self.model,req.rss,req.nsamples,req.pose_array,ns=self.ns)
             loc = loc_server_handle(self.model,req.rss,req.nsamples,req.pose_array,ns=self.ns)
             if loc is None: 
                 rospy.logerr('[handle_loc] Loc returned None')

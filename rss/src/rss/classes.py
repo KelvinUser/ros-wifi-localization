@@ -55,6 +55,7 @@ class Measurement():
         assert type(mdata) is RssData
 
         poses = kwargs.get('poses',None)
+        
         #TODO: make this automatic
         self.poses_type = kwargs.get('poses_type','PoseWithCovarianceStamped')        
 
@@ -68,7 +69,7 @@ class Measurement():
         self.prior_var = kwargs.get('prior_var',5)
                 
         #retrieve mdata
-        self.time = long(mdata.time_start_ns+long(mdata.duration_ms*1000))
+        self.time = int(mdata.time_start_ns+int(mdata.duration_ms*1000))
         self.nap = len(mdata.mac_address)
         self.mac_dict = {mdata.mac_address[i]:i for i in np.arange(self.nap)}
         self.freq = list(mdata.freq)
@@ -84,7 +85,9 @@ class Measurement():
             except:
                 self.pose = None
         else:
+            eprint('[WARN] Pose is NONE')
             self.pose = None
+        
     
     def filter_rss(self,**kwargs):
         """
@@ -127,11 +130,12 @@ class Measurement():
         """
         #TODO: assert poses is list of type(Pose)
         #TODO: when called from ProcessedData, speed up by passing poses_time and not recomputing each time
-
-        poses_time   = [long(p.header.stamp.secs*1e9+p.header.stamp.nsecs) for p in poses]
+        
+        #eprint('[Find Pose]')
+        poses_time   = [int(p.header.stamp.secs*1e9+p.header.stamp.nsecs) for p in poses]
         index_after  = poses_time.index(next(x for x in poses_time if x > self.time))
         index_before = index_after-1
-
+        #eprint('Start')
 
         if self.poses_type == 'PoseWithCovarianceStamped':
             xa = poses[index_after].pose.pose.position.x
@@ -160,6 +164,7 @@ class Measurement():
         dta = float((poses_time[index_after] - self.time)/dt)
         dtb = float((self.time - poses_time[index_before])/dt)
         self.pose = [dta*xb+dtb*xa,dta*yb+dtb*ya,(ab+dtb*((aa-ab+np.pi)%(2*np.pi)-np.pi)+np.pi)%(2*np.pi)-np.pi]
+        eprint('[Find Pose] [{}] = {}'.format(index_before, self.pose))
         #(aa-ab+np.pi)%(2*np.pi)-np.pi ensure that aa-ab uses the shortest arc from aa to ab 
         #e.g., 1deg - 359deg -> (1-359+180)%(360)-180 = 2deg instead of 1-359 = -358 deg  
         #dta*ab+dtb*aa -> dta*ab+dtb*(aa-ab+ab) -> dta*ab+dtb*((aa-ab+np.pi)%(2*np.pi)-np.pi +ab)
@@ -256,7 +261,7 @@ class Measurement():
             print('Incorrect key: ', str(fun))
             
         vector = default_val*np.ones(len(general_dict))
-        for mac,index in self.mac_dict.iteritems(): #for all macs in self
+        for mac,index in self.mac_dict.items(): #for all macs in self
             try:
                 vector[general_dict[mac]] = rss_fun[index] #put rss value in the adequate index from general_dict
             except:
@@ -289,7 +294,7 @@ class Measurement():
         result.nap = len(result.freq)
         
         result.rss = result.rss + [[] for i in range(len(to_add_keys))]
-        for other_mac,other_index in other.mac_dict.iteritems():
+        for other_mac,other_index in other.mac_dict.items():
             index = result.mac_dict[other_mac]
             result.rss[index] = result.rss[index]+other.rss[other_index]
             
@@ -322,7 +327,7 @@ class Measurement():
         if self.pose is not None:
             to_print+='Pose: {}\n'.format(str(self.pose))
         to_print += '{}  {}  {}\n'.format('mac address'.ljust(17),'Freq'.ljust(4),'RSS')
-        for mac,index in self.mac_dict.iteritems():
+        for mac,index in self.mac_dict.items():
             to_print += '{}  {}  {}\n'.format(mac.ljust(17),self.freq[index],self.rss[index])       
 
         return to_print
@@ -358,16 +363,18 @@ class ProcessedData():
         self.poses      = kwargs.get('poses',None)
         poses_type      = kwargs.get('poses_type','PoseWithCovarianceStamped')        
         other_mac_dict  = kwargs.get('other_mac_dict',None)
-        all_filters_on  = kwargs.get('all_filters_on',True) #changes the default flag for filters on
+        all_filters_on  = kwargs.get('all_filters_on', True) #changes the default flag for filters on
         warn_pose_off   = kwargs.get('warn_pose_off',False)
      
         self.measurements = [Measurement(m,poses=self.poses,poses_type=poses_type) for m in raw_measurements]
+        #eprint(len(self.measurements))
+        #eprint(self.measurements[0])
 
         #Filter managemente
         flag_min_distance       = kwargs.get('flag_min_distance',all_filters_on)
         flag_fuse_measurements  = kwargs.get('flag_fuse_measurements',all_filters_on)
         flag_min_points_per_AP  = kwargs.get('flag_fuse_min_points_per_AP',all_filters_on)
-        flag_pose_distance      = kwargs.get('flag_pose_distance',all_filters_on)
+        flag_pose_distance      = False #kwargs.get('flag_pose_distance',all_filters_on)
 
         #MAYBE TODO: do not turn all filters_of
         #filter_distance
@@ -376,8 +383,8 @@ class ProcessedData():
                 self.filter_min_distance      = kwargs.get('filter_min_distance',0.05) #min distance between points in [m]
                 #filter_fuse 
             else:
-                if not warn_pose_off:
-                    eprint('[WARN] No pose will be calculated')
+                #if not warn_pose_off:
+                eprint('[WARN] No pose will be calculated')
 
         if flag_fuse_measurements:
             self.filter_fuse_measurements = kwargs.get('filter_fuse_measurements',5) #number of consecutive measurements to fuse
@@ -467,13 +474,15 @@ class ProcessedData():
         Optional Parameters [default]:
             min_points_per_AP [class filter_min_points_per_AP]: Minimum number of locations a valid mac should be heard
         """
+        eprint('[MAC Filter] Start')
         min_points_per_AP = kwargs.get('min_points_per_AP',self.filter_min_points_per_AP)
         
         self.compute_data()
         del_list = list() #list with macs to delete
         n = self.data['Y'].shape[1]
+        #eprint('[MAC Filter] start size = {}'.format(n))
         
-        for mac,index in self.all_mac_dict.iteritems():
+        for mac,index in self.all_mac_dict.items():
             count = np.count_nonzero(self.data['Y'][:,index])
             if count < min_points_per_AP: 
                 del_list.append(mac)
@@ -481,6 +490,8 @@ class ProcessedData():
         filtered_macs = [mac for mac in self.all_mac_dict.keys() if not mac in del_list]
         self.all_mac_dict = {mac:i for i,mac in enumerate(filtered_macs)}
         
+        #eprint('[MAC Filter]  delete size = {}'.format(len(del_list)))
+        eprint('[MAC Filter] End')
         return True
     
     def super_macs(self,**kwargs):
@@ -497,18 +508,31 @@ class ProcessedData():
                 N: [pxm] Number of rss measurements 
                 *All outputs are 2d arrays with [] the dimension p:#positions, m:#access points  
         """
+        eprint('Compute Data ...')
         if not self.poses is None:     
             dataX   = np.asarray([m.pose for m in self.measurements])
+            eprint(self.measurements)
         else:
             dataX = None
+            
+        eprint('Compute Data ... Get DataX ... Done')
         
-        dataY   = np.asarray([m.transform2vector(self.all_mac_dict,'mean') for m in self.measurements])/100+1. #scaled Y
-        dataVar = np.asarray([m.transform2vector(self.all_mac_dict,'var') for m in self.measurements])/100**2. #scaled Var
+        dataY   = np.asarray([m.transform2vector(self.all_mac_dict,'mean') for m in self.measurements])/100+1.
+        eprint('Compute Data ... Get dataY ... Done')
+        
+        dataVar = np.asarray([m.transform2vector(self.all_mac_dict,'var') for m in self.measurements])/100**2. 
+        eprint('Compute Data ... Get dataVar ... Done')
+        
         dataN   = np.asarray([m.transform2vector(self.all_mac_dict,'len') for m in self.measurements])
+        eprint('Compute Data ... Get dataN ... Done')
+        
         if dataX is None:
+            eprint('Compute Data ... dataX is None')
             self.data = {'X':None, 'Y':dataY,'Var':dataVar,'n':dataN}
-        else:        
+        else:
             self.data = {'X':dataX[:,:2],'Y':dataY,'Var':dataVar,'n':dataN}
+            
+        eprint('Compute Data ... DONE')
 
 
     def save(self,filepath='last_data.p'):
