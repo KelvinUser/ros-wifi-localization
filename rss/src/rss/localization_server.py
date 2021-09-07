@@ -19,7 +19,7 @@ from rss.classes import ProcessedData
 sys.path.insert(1, '/app/ros/catkin/src/ros-wifi-localization/rss/util')
 from others import mesh
 #from util.others import mesh
-sys.path.insert(1, '/app/ros/catkin/src/ros-wifi-localization/src/rss/')
+sys.path.insert(1, '/app/ros/catkin/src/ros-wifi-localization/rss/')
 from Localization.sensormodel.sensormodel import SensorModel
 
 debug = 0
