@@ -92,7 +92,7 @@ class RssLocalization():
             # Load model
             data_empty = {'X':np.asarray([[1,1]]),'Y':np.asarray([1]),'Var':np.asarray([1])}
             self.model = WifiGP(data_empty,verbose=True)
-            self.model.load(filepath='/home/kelvin/catkin_ws/test.p')
+            self.model.load(filepath='/app/ros/catkin/src/ros-wifi-localization/tests/bags/processed_data/test.p')
 
         else:
             eprint('Loading Training Modle [{}]'.format(train_data_name))
@@ -120,8 +120,8 @@ class RssLocalization():
             self.model = WifiGP(traindata.data,all_mac_dict=traindata.all_mac_dict)
             self.model.optimize()
             eprint('Model trained successfully')
-            self.model.save('/home/kelvin/catkin_ws/test.p')
-            eprint('Save modle done...')
+            self.model.save('/app/ros/catkin/src/ros-wifi-localization/tests/bags/processed_data/test.p')
+            eprint('Save model done...')
     
         self.loc_server = rospy.Service(self.ns+'loc_server', Localization, self.handle_loc)
 
