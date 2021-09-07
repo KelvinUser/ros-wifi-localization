@@ -86,14 +86,6 @@
         <param name="max_particles"     value="$(arg max_particles)" />
     </node>
 
-    <!-- Viewers -->
-    <group if="$(arg visualization)">
-        <node name="rss_cost_map" pkg="rss" type="costmap">
-            <param name="subs_topic_id" value="mcl_sensor_update_prob" />
-        </node>
-        <node name="rviz" pkg="rviz" type="rviz"  args="-d $(find rss)/launch/localization.rviz"/>
-    </group>
-
     <!-- Once this node ends, all ends-->
 </launch>
 
