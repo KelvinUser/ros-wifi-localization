@@ -7,8 +7,7 @@ import rospy
 
 #ros messages
 from geometry_msgs.msg import PoseArray, Pose
-
-sys.path.insert(1, '/home/kelvin/catkin_ws/src/rss/msg/')
+sys.path.insert(1, '/app/ros/catkin/src/ros-wifi-localization/rss/msg/')
 from rss.msg import RssData, RssDatum
 
 #Services
@@ -17,10 +16,10 @@ from rss.srv import Localization
 #personal libraries
 from rss.classes import ProcessedData
 
-sys.path.insert(1, '/home/kelvin/catkin_ws/src/rss/util')
+sys.path.insert(1, '/app/ros/catkin/src/ros-wifi-localization/rss/util')
 from others import mesh
 #from util.others import mesh
-sys.path.insert(1, '/home/kelvin/catkin_ws/src/rss/')
+sys.path.insert(1, '/app/ros/catkin/src/ros-wifi-localization/src/rss/')
 from Localization.sensormodel.sensormodel import SensorModel
 
 debug = 0
