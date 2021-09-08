@@ -169,7 +169,7 @@ class WLRF():
         t0 = time.time()
         if 1:
             rs_posearray, rs_w = resampling_wheel(loc.pose_array,weights,nsamples=weights.shape[0])
-            
+            self.particles = arrayfrompose(rs_posearray)
             rs_posearray.header.frame_id  = self.global_frame_id        
             rs_posearray.header.stamp     = time_stamp        
             self.pub_posearray.publish(rs_posearray)
