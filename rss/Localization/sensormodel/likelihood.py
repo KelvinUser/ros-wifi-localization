@@ -96,8 +96,9 @@ class Gaussian(Likelihood):
         """
         ntp  = Xn.shape[0]  #number of X test points
         nap  = model.nap    #number of access points
-
-        measurement = Yn.copy().reshape(1,nap) #Yn becomes [1,nap]
+        
+        # suspect the reshape cannot work with [3,nap] input data shape
+        measurement = Yn[0].copy().reshape(1,nap) #Yn becomes [1,nap]
 
         #check inputs
         assert measurement.shape[1]==nap
