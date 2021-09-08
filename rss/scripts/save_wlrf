@@ -10,7 +10,7 @@ import distutils.dir_util
 import rospy
 #ros messages
 from geometry_msgs.msg import PoseArray, PoseWithCovarianceStamped
-from amcl.msg import ParticlesStats
+from rss.msg import ParticlesStats
 from rss.msg import RssData
 
 

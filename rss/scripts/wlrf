@@ -10,7 +10,7 @@ import tf
 from std_msgs.msg import Float64MultiArray, Int32
 from geometry_msgs.msg import PoseArray, Pose, PoseStamped
 from rss.msg import RssData
-from amcl.msg import ParticlesStats
+from rss.msg import ParticlesStats
 #ros services
 from rss.srv import Localization
 #personal libraries
@@ -18,7 +18,7 @@ from rss.localization_server import loc_server_client
 
 import copy
 
-debug=0
+debug=1
 verbose=0
 random_init=0
 max_rss_len = 3

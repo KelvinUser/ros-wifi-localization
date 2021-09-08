@@ -515,19 +515,19 @@ class ProcessedData():
         else:
             dataX = None
             
-        eprint('Compute Data ... Get DataX ... Done')
+        #eprint('Compute Data ... Get DataX ... Done')
         
         dataY   = np.asarray([m.transform2vector(self.all_mac_dict,'mean') for m in self.measurements])/100+1.
-        eprint('Compute Data ... Get dataY ... Done')
+        #eprint('Compute Data ... Get dataY ... Done')
         
         dataVar = np.asarray([m.transform2vector(self.all_mac_dict,'var') for m in self.measurements])/100**2. 
-        eprint('Compute Data ... Get dataVar ... Done')
+        #eprint('Compute Data ... Get dataVar ... Done')
         
         dataN   = np.asarray([m.transform2vector(self.all_mac_dict,'len') for m in self.measurements])
-        eprint('Compute Data ... Get dataN ... Done')
+        #eprint('Compute Data ... Get dataN ... Done')
         
         if dataX is None:
-            eprint('Compute Data ... dataX is None')
+            #eprint('Compute Data ... dataX is None')
             self.data = {'X':None, 'Y':dataY,'Var':dataVar,'n':dataN}
         else:
             self.data = {'X':dataX[:,:2],'Y':dataY,'Var':dataVar,'n':dataN}

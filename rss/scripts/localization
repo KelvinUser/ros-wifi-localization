@@ -77,7 +77,7 @@ class RssLocalization():
         #Var initialization
         self.raw_rss    = list()
 
-        #subscribers /home/kelvin/catkin_ws/src/rss/scripts/localization
+        #subscribers
         eprint('Subscribing to '+self.ns+'rss')
         rospy.Subscriber(self.ns+'rss',RssData,self.callback_rss) 
 

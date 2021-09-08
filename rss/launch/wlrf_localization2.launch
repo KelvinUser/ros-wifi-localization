@@ -32,7 +32,7 @@
     <arg name="min_particles"    default="100" />
     <arg name="max_particles"    default="5000" />
 
-    <arg name="bag_path"         default="$(find tests)/bags/krp/"/>
+    <arg name="bag_path"         default="$(find tests)/bags/"/>
     <arg name="map_path"         default="$(find tests)/maps/"/>
     <arg name="bag_name"         default="b3test1"/>   
     <arg name="map_name"         default="b3map"/> 
@@ -40,7 +40,7 @@
     
     <arg name="train_data_name"  default="b3test1"/> 
     <arg name="train_data_fuse"  default="10"/>
-    <arg name="save_filepath"    default="/home/renato/Desktop/test results/wlrf-w"/> 
+    <arg name="save_filepath"    default="~/Desktop/results/wlrf-w"/> 
 
     <arg name="global_localization" default="False"/>
 
@@ -111,10 +111,12 @@
     <group if="$(arg visualization)">
         <node name="rviz" pkg="rviz" type="rviz"  args="-d $(find rss)/launch/wlrf.rviz"/>
     </group>
-
+    
+    <!--
     <node name="save" pkg="rss" type="save_wlrf" required = "true" output="screen" > 
         <param name="filepath"          value="$(arg save_filepath)" />
     </node>
+    -->
 
 </launch>
 

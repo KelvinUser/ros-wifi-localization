@@ -7,6 +7,8 @@ from ..sampling import sampling
 from util.others import mesh
 import scipy
 import sys
+import os
+
 def eprint(*args, **kwargs):                    #prints errors/warnings to stderr
     print(*args, file=sys.stderr, **kwargs)
 

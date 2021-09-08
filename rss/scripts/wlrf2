@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from __future__ import print_function
 #standard libraries
 import sys, time
@@ -10,7 +10,7 @@ import tf
 from std_msgs.msg import Float64MultiArray, Int32
 from geometry_msgs.msg import PoseArray, Pose, PoseStamped
 from rss.msg import RssData
-from amcl.msg import ParticlesStats
+from rss.msg import ParticlesStats
 #ros services
 from rss.srv import Localization
 #personal libraries
@@ -153,8 +153,9 @@ class WLRF():
         if len(rss_copy)<min_rss_len: #ensure at least min_rss+len samples have been obtained
             time.sleep(.5)
             return False
-            
+        t0 =time.time()    
         loc = loc_server_client(rss_copy,len(posearray.poses),pose_array=posearray,ns=self.loc_srv_ns) 
+        eprint('loc_server_client time {:} ms'.format(int((time.time()-t0)*1000)))
 
         if loc is None:
             eprint('[WARN] Error obtaining particles weights')
@@ -164,7 +165,9 @@ class WLRF():
             eprint("Localization received")
 
         weights = np.asarray(loc.weights)
-        if np.std(weights)>thr_std_w and self.wifi_sampling:
+        #if np.std(weights)>thr_std_w and self.wifi_sampling:
+        t0 = time.time()
+        if 1:
             rs_posearray, rs_w = resampling_wheel(loc.pose_array,weights,nsamples=weights.shape[0])
             
             rs_posearray.header.frame_id  = self.global_frame_id        
@@ -172,12 +175,35 @@ class WLRF():
             self.pub_posearray.publish(rs_posearray)
             eprint('wifi resampling')
             self.wifi_sampling = False
+        
+        eprint('resampling_wheel time {:} ms'.format(int((time.time()-t0)*1000)))
+        t0 = time.time()
+        
+        x = np.sum(self.particles[:,0]*rs_w)/np.sum(rs_w)
+        y = np.sum(self.particles[:,1]*rs_w)/np.sum(rs_w)
+        #proper average of angles
+        c = np.sum(np.cos(self.particles[:,2])*rs_w)
+        s = np.sum(np.sin(self.particles[:,2])*rs_w)
+        o = np.arctan2(s,c)
+        #eprint(o*180/np.pi)
+        q = tf.transformations.quaternion_from_euler(0,0,o)
+        
+        wpose = PoseStamped()
+        wpose.header = posearray.header
+        wpose.pose.position.x = x
+        wpose.pose.position.y = y
+        wpose.pose.orientation.z = q[2]
+        wpose.pose.orientation.w = q[3]
+        
+        eprint('pose weight cal time {:} ms'.format(int((time.time()-t0)*1000)))
+        self.pub_poseweighted.publish(wpose)
 
 
-        self.publish_wifiweightsstats(weights,time_stamp)        
-        #eprint('max weights\t',np.max(weights))
-        #eprint('avg weights\t',np.mean(weights))
-        #eprint('std weights\t',np.std(weights))
+        self.publish_wifiweightsstats(weights,time_stamp)       
+        if debug:
+            eprint('max weights\t',np.max(weights))
+            eprint('avg weights\t',np.mean(weights))
+            eprint('std weights\t',np.std(weights))
         return True
 
 
@@ -243,6 +269,7 @@ class WLRF():
         pstats.w_avg = np.mean(weights)
         pstats.w_max = np.max(weights)
         self.pub_wifistats.publish(pstats)
+        
 
 if __name__ == '__main__':
     wlrf = WLRF()

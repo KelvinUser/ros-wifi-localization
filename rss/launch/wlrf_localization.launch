@@ -6,7 +6,7 @@
     <arg name="rosbag_rate"      default="1" />
     <arg name="angle_var"        default="0.08"/>
     <arg name="distance_var"     default="0.05"/>
-    <arg name="rss_interval"     default="3" />
+    <arg name="rss_interval"     default="1" />
 
     <arg name="model_name"       default="gaussian" />
     <arg name="model_likelihood" default="PoE" />
@@ -32,15 +32,15 @@
     <arg name="min_particles"    default="100" />
     <arg name="max_particles"    default="5000" />
 
-    <arg name="bag_path"         default="/home/kelvin/catkin_ws/src/tests/bags/"/>
-    <arg name="map_path"         default="/home/kelvin/catkin_ws/src/tests/maps/"/>
+    <arg name="bag_path"         default="$(find tests)/bags/"/>
+    <arg name="map_path"        default="$(find tests)/maps/"/>
     <arg name="bag_name"         default="b3test1"/>   
     <arg name="map_name"         default="b3map"/> 
     <arg name="use_lrfmap"       default="False"/> 
     
     <arg name="train_data_name"  default="b3test1"/> 
     <arg name="train_data_fuse"  default="10"/>
-    <arg name="save_filepath"    default="/home/renato/Desktop/test results/wlrf"/> 
+    <arg name="save_filepath"    default="/home/kelvin/Desktop/test results/wlrf"/> 
 
     <arg name="global_localization" default="True"/>
 

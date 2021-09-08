@@ -7,7 +7,8 @@ import rospy
 
 #ros messages
 from geometry_msgs.msg import PoseArray, Pose
-sys.path.insert(1, '/app/ros/catkin/src/ros-wifi-localization/rss/msg/')
+
+#sys.path.insert(1, '/home/kelvin/catkin_ws/src/rss/msg/')
 from rss.msg import RssData, RssDatum
 
 #Services
@@ -22,7 +23,7 @@ from others import mesh
 sys.path.insert(1, '/app/ros/catkin/src/ros-wifi-localization/rss/')
 from Localization.sensormodel.sensormodel import SensorModel
 
-debug = 0
+debug = 1
 
 def eprint(*args, **kwargs):                    #prints errors/warnings to stderr
     print(*args, file=sys.stderr, **kwargs)

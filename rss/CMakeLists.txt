@@ -50,6 +50,7 @@ add_message_files(
   RssData.msg
   RssDatum.msg
   ProbArray.msg
+  ParticlesStats.msg
 )
 
 ## Generate services in the 'srv' folder
