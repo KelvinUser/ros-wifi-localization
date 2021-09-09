@@ -23,10 +23,10 @@ Unzip and copy downloaded or original rosbags to
 
 ## Tested Platform
 
-    Ubuntu 14.04.5
-    ROS indigo
-    Python 2.7
-
+    Ubuntu 20.04
+    ROS noetic
+    Python 3.8
+neotic
 ## Libraries dependencies
 
     wifi-localization at https://github.com/RMiyagusuku/wifi-localization
