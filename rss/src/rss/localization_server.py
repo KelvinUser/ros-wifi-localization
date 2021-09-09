@@ -87,9 +87,9 @@ def loc_server_handle(model,raw_rss,nsamples,pose_array, **kwargs):
     
     eprint('[loc_server] ProcessData Done...')
     if debug:
-        eprint(type(rss))
+        #eprint(type(rss))
         for rss_datum in rss_list:
-            eprint(str(rss.data['Y'].shape[1])+' acccess points out of '+str(len(rss_datum.mac_address))+' used')
+            eprint('[loc_server_handle] ' + str(rss.data['Y'].shape[1])+' acccess points out of '+str(len(rss_datum.mac_address))+' used')
     # use train mac, filters off by default, no warning due to poses missing, 
     # fuse measurements on, fuse all measurements available
         

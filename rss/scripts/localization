@@ -102,6 +102,7 @@ class RssLocalization():
             eprint('Loading model data')
             raw_rss,poses,tmp_odom = load_data(file_name=file_name) #odometry is not needed
             eprint('[Check Size] poses size = {}'.format(len(poses)))
+            eprint('[Check Size] raw_rss size = {}'.format(len(raw_rss)))
             
             #eprint(poses)
             

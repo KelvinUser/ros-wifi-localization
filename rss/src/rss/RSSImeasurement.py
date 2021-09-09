@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from __future__ import print_function
 import numpy as np
 import sys
@@ -61,17 +62,18 @@ class Device:
         self.proc_out = self.read_process.stdout
         
         if self.filter:
-            cmd = 'filter_rss.py'
-            self.filter_process = subprocess.Popen(cmd,stdin=self.read_process.stdout,stdout=subprocess.PIPE)
+            cmd = 'python3 filter_rss.py'
+            self.filter_process = subprocess.Popen(cmd,stdin=self.read_process.stdout,stdout=subprocess.PIPE, shell=True)
             self.proc_out = self.filter_process.stdout
             eprint('Using Filter')
 
     def chopper_start(self):
         
         cmd = "chopper.py -i {} -t {} -ch {}".format(self.iface,self.ts," ".join(str(ch) for ch in self.channels))
-        self.chopper_process = subprocess.Popen(cmd.split(),stdout=subprocess.PIPE)
+        eprint('[Chopper] Command = {}'.format(cmd))
+        self.chopper_process = subprocess.Popen("python3 chopper.py",stdout=subprocess.PIPE, shell=True) #cmd.split(),stdout=subprocess.PIPE, shell=True)
 
-    def __str__(self):the 
+    def __str__(self):
         """
         Overloading __str__ to make print statement meaningful
         
@@ -93,14 +95,16 @@ if __name__=="__main__":
     parser.add_argument('-ch',dest='channels',type=int,nargs='+',default=(1,4,11,),help='Channels to hop')
     parser.add_argument('-b',dest='buffer',type=int,default=5,help='Number of buffered log files')
     parser.add_argument('-nf',dest='filter',default=True,action='store_false',help='Turn filtering of tcpdump output off')
-        
+    
     args = parser.parse_args()
     device = Device(**vars(args))                   #device init
     device.chopper_start()                          #channel hopper start
 
     while True:                                     #wait for channel hopper
-        line = device.chopper_process.stdout.readline()[:-1]
-        if line == 'ready':
+        line = device.chopper_process.stdout.readline()
+        if str(line).find('ready') > -1 :
+            break
+        if line == "ready":
             break
 
     eprint('Streaming starting')
@@ -232,7 +236,7 @@ def decodeTcpdump(FileName,**options):
         if addInd != -1:                    # if found (-1 when not found)    
             address = datum[addInd+3:addInd+20]
             if address in addressList:
-                index = addressList[address]    # Recover index from dict
+                index = addressList[address]   # Recover index from dict
             else:
                 index = len(addressList)        # Assign new index
 

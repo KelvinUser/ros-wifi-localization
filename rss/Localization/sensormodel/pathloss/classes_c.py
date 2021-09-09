@@ -6,6 +6,11 @@ import levmar
 from util import data_validation 
 from util.distance import euclidean_squared
 
+import sys
+
+def eprint(*args, **kwargs):                    #prints errors/warnings to stderr
+    print(*args, file=sys.stderr, **kwargs)
+
 
 class FLog(object):
     """
@@ -81,14 +86,16 @@ class FLog(object):
         TODO: add openMP to levmar
         """
         # Optimization through levmar
-        if verbose:
-            print ('Initializing optimization')
+        #if verbose:
+        eprint ('[Class C] Initializing optimization')
 
         nap = self.data['Y'].shape[1]
         x_list = self.data['X'][:,0].tolist()
         y_list = self.data['X'][:,1].tolist()
         z_list = self.data['Y'].T.flatten().tolist()
+        eprint ('[Class C] p_estimate ... ')
         p_estimate = levmar.optimize(x_list,y_list,z_list)
+        eprint ('[Class C] p_estimate ... Done')
         self.params = np.reshape(np.asarray(p_estimate),self.params.shape)
         
 

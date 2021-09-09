@@ -98,6 +98,15 @@ class GPcore(SensorModel):
         with open(filepath, 'wb') as f:
             pickle.dump(self.__dict__,f,2)
         
+        #open(filepath, 'w+') 
+        
+        if (os.path.exists(filepath)):
+            eprint('File Exist')
+        else:
+            eprint('No SUCH FILE !')
+            
+        eprint('Pickle To [{}]'.format(filepath))
+        
         return filepath
 
     def load(self,filepath='last_model.p'):

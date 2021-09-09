@@ -281,7 +281,7 @@ class Measurement():
         assert type(other) is type(self)
         result = copy.deepcopy(self)
         
-        result.time = long(result.time*.5)+long(other.time*.5)
+        result.time = int(result.time*.5)+int(other.time*.5)
         
         #finding mac_addresses not sensed in self
         to_add_keys = [mac for mac in other.mac_dict if mac not in result.mac_dict]
@@ -374,7 +374,7 @@ class ProcessedData():
         flag_min_distance       = kwargs.get('flag_min_distance',all_filters_on)
         flag_fuse_measurements  = kwargs.get('flag_fuse_measurements',all_filters_on)
         flag_min_points_per_AP  = kwargs.get('flag_fuse_min_points_per_AP',all_filters_on)
-        flag_pose_distance      = False #kwargs.get('flag_pose_distance',all_filters_on)
+        flag_pose_distance      = kwargs.get('flag_pose_distance',all_filters_on)
 
         #MAYBE TODO: do not turn all filters_of
         #filter_distance
@@ -511,10 +511,10 @@ class ProcessedData():
         eprint('Compute Data ...')
         if not self.poses is None:     
             dataX   = np.asarray([m.pose for m in self.measurements])
-            #eprint(self.measurements)
+            #eprint(len(self.measurements))
         else:
             dataX = None
-            
+    
         #eprint('Compute Data ... Get DataX ... Done')
         
         dataY   = np.asarray([m.transform2vector(self.all_mac_dict,'mean') for m in self.measurements])/100+1.
@@ -531,7 +531,7 @@ class ProcessedData():
             self.data = {'X':None, 'Y':dataY,'Var':dataVar,'n':dataN}
         else:
             self.data = {'X':dataX[:,:2],'Y':dataY,'Var':dataVar,'n':dataN}
-            
+        
         eprint('Compute Data ... DONE')
 
 
