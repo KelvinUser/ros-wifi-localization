@@ -13,7 +13,7 @@ LIBOBJS=lm.o Axb.o misc.o lmlec.o lmbc.o lmblec.o lmbleic.o
 LIBSRCS=lm.c Axb.c misc.c lmlec.c lmbc.c lmblec.c lmbleic.c
 DEMOBJS=lmdemo.o
 DEMOSRCS=lmdemo.c
-AR=ar
+AR=ar -r
 RANLIB=ar -s
 LAPACKLIBS=-llapack -lblas -lf2c # comment this line if you are not using LAPACK.
                                  # On systems with a FORTRAN (not f2c'ed) version of LAPACK, -lf2c is
