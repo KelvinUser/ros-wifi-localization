@@ -32,14 +32,11 @@ LAPACKLIBS=-llapack -lblas -lf2c # comment this line if you are not using LAPACK
 
 LIBS=$(LAPACKLIBS)
 
-all: liblevmar.a lmdemo
+all: liblevmar.a
 
 liblevmar.a: $(LIBOBJS)
 	$(AR) crv liblevmar.a $(LIBOBJS)
 	$(RANLIB) liblevmar.a
-
-lmdemo: $(DEMOBJS) liblevmar.a
-	$(CC) $(LDFLAGS) $(DEMOBJS) -o lmdemo -llevmar $(LIBS) -lm
 
 lm.o: lm.c lm_core.c levmar.h misc.h compiler.h
 Axb.o: Axb.c Axb_core.c levmar.h misc.h
@@ -48,8 +45,6 @@ lmlec.o: lmlec.c lmlec_core.c levmar.h misc.h
 lmbc.o: lmbc.c lmbc_core.c levmar.h misc.h compiler.h
 lmblec.o: lmblec.c lmblec_core.c levmar.h misc.h
 lmbleic.o: lmbleic.c lmbleic_core.c levmar.h misc.h
-
-lmdemo.o: levmar.h
 
 clean:
 	@rm -f $(LIBOBJS) $(DEMOBJS)
